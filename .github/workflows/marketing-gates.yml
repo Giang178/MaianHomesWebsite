@@ -1,0 +1,36 @@
+name: marketing-gates
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  marketing-integration:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      ENVIRONMENT: test
+      SECRET_KEY: ci-only-secret-key-with-more-than-forty-eight-random-characters
+      MONGODB_URL: mongodb://127.0.0.1:27017/maian_marketing_ci?replicaSet=rs0
+      DATABASE_NAME: maian_marketing_ci
+      MARKETING_INTEGRATION_TESTS: "1"
+      MARKETING_TRANSACTIONS_ENABLED: "true"
+      ENSURE_INDEXES_ON_STARTUP: "false"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+      - run: pip install -r requirements.txt
+      - name: Start MongoDB replica set
+        working-directory: .
+        run: |
+          docker run -d --name marketing-mongo -p 27017:27017 mongo:8.0.26-noble mongod --replSet rs0 --bind_ip_all
+          for i in $(seq 1 60); do docker exec marketing-mongo mongosh --quiet --eval 'db.adminCommand("ping").ok' && break; sleep 2; done
+          docker exec marketing-mongo mongosh --quiet --eval 'rs.initiate({_id:"rs0",members:[{_id:0,host:"127.0.0.1:27017"}]})'
+          for i in $(seq 1 60); do docker exec marketing-mongo mongosh --quiet --eval 'db.hello().isWritablePrimary' | grep true && break; sleep 2; done
+      - run: python tests/integration/marketing_infrastructure.py

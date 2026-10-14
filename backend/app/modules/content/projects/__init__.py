@@ -1,0 +1,2 @@
+"""Project content aggregate."""
+

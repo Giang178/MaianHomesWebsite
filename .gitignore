@@ -1,0 +1,73 @@
+# .gitignore
+
+# AI Agents
+.agents/
+.gemini/
+
+# Environment Variables
+*.env
+*.env.*
+!.env.example
+!*/.env.example
+!.env.docker.example
+!.env.staging.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+backend/venv/
+backend/.venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Prevent committing ad-hoc test/debug scripts outside tests/
+test_*.py
+!backend/tests/test_*.py
+!backend/tests/it/test_*.py
+!backend/tests/**/test_*.py
+debug_*.py
+check_*.py
+
+# Node.js
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+dist/
+build/
+.next-env.d.ts
+.tsbuildinfo
+.dev-logs/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local Storage/Uploads (Temporary)
+backend/uploads/*
+!backend/uploads/.gitkeep
+backend/app/uploads/
+backend/storage/*
+!backend/storage/.gitkeep
+frontend/test-results/
+frontend/playwright-report/
+.release-artifacts/
+git_*.txt
+frontend/test.ts
+
+# Local diagnostics
+*.log
+scratch_*.txt
+
+# Local audit archives
+project-audit/archive/

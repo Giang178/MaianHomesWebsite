@@ -1,0 +1,270 @@
+x-logging: &default-logging
+  driver: json-file
+  options: {max-size: "20m", max-file: "5"}
+
+services:
+  mongo1:
+    logging: *default-logging
+    image: mongo:8.0.26-noble
+    restart: unless-stopped
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all", "--wiredTigerCacheSizeGB", "${MONGODB_WIRED_TIGER_CACHE_GB:-2}"]
+    volumes: [mongo1_data:/data/db]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    networks: [data]
+  mongo-init:
+    image: mongo:8.0.26-noble
+    depends_on:
+      mongo1: {condition: service_healthy}
+    restart: "no"
+    command:
+      - bash
+      - -c
+      - |
+        set -eu
+        mongosh --host mongo1:27017 --eval 'try { rs.status() } catch (e) { rs.initiate({_id:"rs0",members:[{_id:0,host:"mongo1:27017"}]}) }'
+        for attempt in $(seq 1 30); do
+          if mongosh --host mongo1:27017 --quiet --eval 'quit(db.hello().isWritablePrimary ? 0 : 1)' >/dev/null 2>&1; then
+            exit 0
+          fi
+          sleep 1
+        done
+        echo 'MongoDB replica set rs0 did not become writable' >&2
+        exit 1
+
+    networks: [data]
+  redis:
+    logging: *default-logging
+    image: redis:7.4.9-alpine3.21
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "allkeys-lru"]
+    volumes: [redis_data:/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    networks: [data]
+  clamav:
+    logging: *default-logging
+    image: clamav/clamav:1.4.5
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "clamdscan --ping=1"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
+    volumes: [clamav_data:/var/lib/clamav]
+    networks: [data]
+
+  ollama:
+    profiles: ["ollama"]
+    logging: *default-logging
+    image: ${OLLAMA_IMAGE:-ollama/ollama:0.32.5}
+    restart: unless-stopped
+    environment:
+      OLLAMA_KEEP_ALIVE: ${OLLAMA_KEEP_ALIVE:-5m}
+      OLLAMA_NUM_PARALLEL: ${OLLAMA_NUM_PARALLEL:-1}
+      OLLAMA_MAX_LOADED_MODELS: ${OLLAMA_MAX_LOADED_MODELS:-1}
+    volumes: [ollama_data:/root/.ollama]
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    networks: [data]
+  ollama-init:
+    profiles: ["ollama"]
+    image: ${OLLAMA_IMAGE:-ollama/ollama:0.32.5}
+    entrypoint: ["/bin/ollama"]
+    command: ["pull", "${OLLAMA_MODEL:-qwen3:4b-instruct-2507-q4_K_M}"]
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    volumes: [ollama_data:/root/.ollama]
+    depends_on:
+      ollama: {condition: service_healthy}
+    restart: "no"
+    networks: [data]
+
+  minio:
+    logging: *default-logging
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:?S3_ACCESS_KEY must be configured}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:?S3_SECRET_KEY must be configured}
+    volumes: [minio_data:/data]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    networks: [data]
+  storage-init:
+    build: ./backend
+    image: ${BACKEND_RELEASE_IMAGE:-maian-backend:green}
+    env_file: ${APP_ENV_FILE:-.env.docker.example}
+    command: ["python", "-c", "import asyncio; from app.services.storage import storage_service; asyncio.run(storage_service.ensure_bucket())"]
+    depends_on:
+      minio: {condition: service_healthy}
+    restart: "no"
+    networks: [data]
+  database-bootstrap:
+    build: ./backend
+    image: ${BACKEND_RELEASE_IMAGE:-maian-backend:green}
+    env_file: ${APP_ENV_FILE:-.env.docker.example}
+    environment:
+      CEO_EMAIL: ${CEO_EMAIL:?CEO_EMAIL must be configured}
+      CEO_FULL_NAME: ${CEO_FULL_NAME:?CEO_FULL_NAME must be configured}
+      CEO_PHONE: ${CEO_PHONE:?CEO_PHONE must be configured}
+      CEO_BOOTSTRAP_PASSWORD: ${CEO_BOOTSTRAP_PASSWORD:?CEO_BOOTSTRAP_PASSWORD must be configured}
+    command: ["python", "-m", "scripts.database_bootstrap"]
+    depends_on:
+      mongo-init: {condition: service_completed_successfully}
+    restart: "no"
+    networks: [data]
+  database-verify:
+    build: ./backend
+    image: ${BACKEND_RELEASE_IMAGE:-maian-backend:green}
+    env_file: ${APP_ENV_FILE:-.env.docker.example}
+    command: ["python", "-m", "scripts.database_verify"]
+    depends_on:
+      database-bootstrap: {condition: service_completed_successfully}
+    restart: "no"
+    networks: [data]
+
+  api1: &api
+    logging: *default-logging
+    build: ./backend
+    image: ${BACKEND_BLUE_IMAGE:-maian-backend:blue}
+    env_file: ${APP_ENV_FILE:-.env.docker.example}
+    # Keep the proven four-worker default, but allow an operator to tune the
+    # process/concurrency envelope per machine without rebuilding the image.
+    # Uvicorn returns 503 above the bounded concurrency limit instead of
+    # accepting enough work to exhaust the container.
+    command:
+      - /bin/sh
+      - -ec
+      - >-
+        exec uvicorn app.main:app
+        --host 0.0.0.0
+        --port 8000
+        --workers "$${UVICORN_WORKERS:-4}"
+        --limit-concurrency "$${UVICORN_LIMIT_CONCURRENCY:-512}"
+        --backlog "$${UVICORN_BACKLOG:-2048}"
+        --timeout-keep-alive "$${UVICORN_TIMEOUT_KEEP_ALIVE:-10}"
+        --timeout-graceful-shutdown "$${UVICORN_TIMEOUT_GRACEFUL_SHUTDOWN:-30}"
+        --no-access-log
+        --proxy-headers
+        --forwarded-allow-ips 172.16.0.0/12
+    depends_on:
+      database-verify: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+      storage-init: {condition: service_completed_successfully}
+      clamav: {condition: service_healthy}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=5)"]
+      interval: 15s
+      timeout: 7s
+      retries: 12
+      start_period: 45s
+    networks: [app, data, egress]
+  api2:
+    <<: *api
+    image: ${BACKEND_GREEN_IMAGE:-maian-backend:green}
+  activity-worker:
+    logging: *default-logging
+    build: ./backend
+    image: ${BACKEND_WORKER_IMAGE:-maian-backend:green}
+    env_file: ${APP_ENV_FILE:-.env.docker.example}
+    command: ["python", "-m", "app.modules.activity.worker"]
+    depends_on:
+      database-verify: {condition: service_completed_successfully}
+    restart: unless-stopped
+    networks: [data]
+  content-worker:
+    logging: *default-logging
+    build: ./backend
+    image: ${BACKEND_WORKER_IMAGE:-maian-backend:green}
+    env_file: ${APP_ENV_FILE:-.env.docker.example}
+    command: ["python", "-m", "app.modules.content.jobs.worker"]
+    depends_on:
+      database-verify: {condition: service_completed_successfully}
+    restart: unless-stopped
+    networks: [app, data, egress]
+  system-monitor-worker:
+    logging: *default-logging
+    build: ./backend
+    image: ${BACKEND_WORKER_IMAGE:-maian-backend:green}
+    env_file: ${APP_ENV_FILE:-.env.docker.example}
+    command: ["python", "-m", "app.modules.system.jobs.system_monitor"]
+    depends_on:
+      database-verify: {condition: service_completed_successfully}
+      storage-init: {condition: service_completed_successfully}
+    restart: unless-stopped
+    networks: [app, data, egress]
+  frontend1: &frontend
+    logging: *default-logging
+    build: ./frontend
+    image: ${FRONTEND_BLUE_IMAGE:-maian-frontend:blue}
+    environment:
+      BACKEND_URL: http://api1:8000
+      TRUSTED_PROXY_HEADERS: "true"
+      PROXY_FALLBACK_CLIENT_IP: 127.0.0.1
+    depends_on:
+      api1: {condition: service_healthy}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 7s
+      retries: 10
+    networks: [app, egress]
+  frontend2:
+    <<: *frontend
+    image: ${FRONTEND_GREEN_IMAGE:-maian-frontend:green}
+    environment:
+      BACKEND_URL: http://api2:8000
+      TRUSTED_PROXY_HEADERS: "true"
+      PROXY_FALLBACK_CLIENT_IP: 127.0.0.1
+    depends_on:
+      api2: {condition: service_healthy}
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports: ["80:80"]
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+    volumes:
+      - ./infrastructure/nginx.conf:/etc/nginx/nginx.conf:ro
+      - certbot_webroot:/var/www/certbot:ro
+    depends_on:
+      frontend1: {condition: service_healthy}
+      frontend2: {condition: service_healthy}
+    networks: [edge, app]
+    logging:
+      driver: json-file
+      options: {max-size: "20m", max-file: "5"}
+volumes:
+  mongo1_data:
+  redis_data:
+  minio_data:
+  certbot_webroot:
+  clamav_data:
+  ollama_data:
+networks:
+  edge:
+  app:
+    internal: true
+  data:
+    internal: true
+  egress:

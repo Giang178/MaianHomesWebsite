@@ -1,0 +1,133 @@
+NỘI DUNG TRANG GIỚI THIỆU ĐÃ ĐƯỢC GỠ KHỎI MÃ NGUỒN
+Nguồn khôi phục: phiên bản trước của frontend/src/app/(client)/gioi-thieu/page.tsx
+
+======================================================================
+1. TÓM TẮT GIỚI THIỆU
+======================================================================
+
+Về Maian Homes:
+
+Maian Homes cung cấp các giải pháp tư vấn bất động sản từ mua ở, đầu tư đến chuyển nhượng, cho thuê và quản lý tài sản. Với đội ngũ am hiểu thị trường và tinh thần tư vấn minh bạch, chúng tôi hướng đến một giao dịch đúng và một mối quan hệ dài lâu.
+
+Mô tả doanh nghiệp dùng cho dữ liệu có cấu trúc:
+
+Maian Homes là đơn vị tư vấn, phân phối, ký gửi và đầu tư bất động sản cao cấp tại TP.HCM, hoạt động dựa trên giá trị cốt lõi Tâm - Tín.
+
+======================================================================
+2. CÂU CHUYỆN THƯƠNG HIỆU – SỨ MỆNH
+======================================================================
+
+Tiêu đề: Câu Chuyện Thương Hiệu
+
+Nhãn: Sứ Mệnh
+
+Maian Homes mang sứ mệnh giúp mỗi khách hàng hiểu đúng giá trị và lựa chọn đúng bất động sản, thông qua sự thấu hiểu nhu cầu, tư vấn minh bạch và đồng hành có trách nhiệm.
+
+Chúng tôi hướng đến việc nâng cao giá trị nghề tư vấn bất động sản, xây dựng niềm tin lâu dài và tạo nên những quyết định đúng cho khách hàng, đối tác và cộng đồng.
+
+======================================================================
+3. GIÁ TRỊ CỐT LÕI
+======================================================================
+
+Nhãn: Định hướng
+Tiêu đề: Giá Trị Cốt Lõi
+
+01. CHÍNH TRỰC
+
+Minh bạch trong thông tin, trung thực trong tư vấn. Lợi ích của khách hàng luôn được đặt trước lợi ích của giao dịch.
+
+02. CHUYÊN NGHIỆP
+
+Am hiểu thị trường, hiểu sâu sản phẩm và không ngừng nâng cao năng lực để tư vấn đúng giá trị, đúng nhu cầu.
+
+03. TẬN TÂM
+
+Lắng nghe để thấu hiểu, tư vấn bằng trách nhiệm và đồng hành như chính tài sản của mình.
+
+04. BỀN VỮNG
+
+Không chạy theo một giao dịch ngắn hạn. Maian Homes xây dựng niềm tin, mối quan hệ và giá trị lâu dài với khách hàng, đối tác và đội ngũ.
+
+======================================================================
+4. VĂN HÓA DOANH NGHIỆP
+======================================================================
+
+Nhãn: Môi trường làm việc
+Tiêu đề: Văn Hóa Doanh Nghiệp
+
+Tại Maian Homes, chúng tôi tin rằng sự phát triển bền vững của doanh nghiệp bắt nguồn từ sự phát triển toàn diện của mỗi cá nhân. Chúng tôi kiến tạo một môi trường làm việc nơi sự chuyên nghiệp gặp gỡ sự tận tâm, nơi mỗi nhân sự được trao quyền để bứt phá giới hạn và kiến tạo những thành tựu vượt trội.
+
+CHÍNH TRỰC & CHUẨN MỰC
+
+Chúng tôi đề cao tính trung thực và minh bạch trong mọi giao dịch và mối quan hệ với khách hàng, đối tác.
+
+HỌC TẬP KHÔNG NGỪNG
+
+Đào tạo kiến thức thị trường và kỹ năng tư vấn chuyên sâu hàng tuần để đội ngũ luôn đi trước đón đầu xu hướng.
+
+GẮN KẾT & ĐỒNG LÒNG
+
+Tinh thần đoàn kết, sẻ chia và hỗ trợ lẫn nhau là chìa khóa tạo nên sức mạnh tập thể vượt trội của Maian Homes.
+
+NĂNG ĐỘNG & SÁNG TẠO
+
+Khuyến khích tư duy đổi mới, tính linh hoạt thích ứng nhanh và luôn duy trì năng lượng tích cực trước mọi biến động thị trường.
+
+======================================================================
+5. ĐỐI TÁC CHIẾN LƯỢC
+======================================================================
+
+Nhãn: Đồng hành cùng phát triển
+Tiêu đề: Đối Tác Chiến Lược
+
+Danh sách đối tác từng hiển thị:
+
+- Vingroup
+- Masterise Homes
+- Keppel Land
+- Gamuda Land
+- CapitaLand
+- SonKim Land
+- Nam Long
+- Khang Điền
+
+======================================================================
+6. TRIẾT LÝ KINH DOANH
+======================================================================
+
+Nhãn: Triết lý kinh doanh
+Tiêu đề: Ưu Tiên Lợi Ích Khách Hàng
+
+Với định hướng phát triển bền vững, Maian Homes xây dựng uy tín dựa trên giá trị cốt lõi Tâm – Tín, không ngừng nỗ lực mang lại giá trị thực cho khách hàng và đối tác trong từng giao dịch.
+
+NGƯỜI BẠN ĐỒNG HÀNH
+
+Maian Homes luôn đặt lợi ích của khách hàng làm trọng tâm và hướng đến vai trò là người bạn đồng hành tin cậy của đối tác trong lĩnh vực bất động sản.
+
+ĐỘI NGŨ CHUYÊN NGHIỆP
+
+Công ty được xây dựng và dẫn dắt bởi đội ngũ quản lý có kinh nghiệm trong ngành, cùng hệ thống chuyên viên tư vấn được đào tạo bài bản, am hiểu thị trường và luôn giữ tinh thần nhiệt huyết.
+
+ĐÀO TẠO LIÊN TỤC
+
+Song song đó, công ty chú trọng phát triển đội ngũ thông qua các chương trình đào tạo nội bộ về kiến thức thị trường, dự án, kỹ năng tư vấn và chuẩn mực đạo đức nghề nghiệp.
+
+======================================================================
+7. CÂU HỎI THƯỜNG GẶP
+======================================================================
+
+Câu hỏi 1: Maian Homes là doanh nghiệp gì?
+
+Maian Homes là đơn vị tư vấn, môi giới và quản lý bất động sản, đồng hành cùng khách hàng từ lựa chọn đúng tài sản đến khai thác và gia tăng giá trị bền vững.
+
+Câu hỏi 2: Dịch vụ chính của Maian Homes gồm những gì?
+
+Tư vấn & môi giới bất động sản – mua bán, chuyển nhượng, cho thuê.
+
+Tư vấn đầu tư – lựa chọn bất động sản phù hợp mục tiêu và tài chính.
+
+Quản lý & vận hành tài sản – hỗ trợ khai thác, cho thuê và chăm sóc tài sản sau khi sở hữu.
+
+Câu hỏi 3: Khách hàng có thể liên hệ ký gửi hoặc tư vấn dự án bằng cách nào?
+
+Quý khách hàng có thể đăng ký thông tin trực tuyến qua trang Ký gửi hoặc Liên hệ trên hệ thống website maianhomes.vn, hoặc liên hệ trực tiếp qua hotline dịch vụ khách hàng để được khảo sát và hỗ trợ nhanh chóng.

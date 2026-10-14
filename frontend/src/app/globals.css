@@ -1,0 +1,685 @@
+/* src/app/globals.css */
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-serif: var(--font-noto-serif), Georgia, serif;
+}
+
+/* Ép toàn bộ giao diện dùng font Inter với line-height 1.5 nhất quán */
+html,
+body,
+input,
+button,
+select,
+textarea {
+  font-family: var(--font-inter), 'Inter', ui-sans-serif, system-ui, sans-serif !important;
+  line-height: 1.5 !important;
+}
+
+/* ==============================================================================
+   TỐI ƯU HÓA KÍCH THƯỚC CHỮ TOÀN BỘ WEBSITE TRÊN PC VÀ LAPTOP (+15%)
+   Đảm bảo tất cả nội dung (văn bản, tiêu đề, card, bảng biểu) đọc rõ ràng,
+   thoải mái mắt, giữ trọn vẹn bố cục cân đối và đẳng cấp cao cấp.
+   ============================================================================== */
+@media (min-width: 1024px) {
+  html {
+    font-size: 17px;
+    /* ~106.25% - Tăng nhẹ mượt mà trên Laptop 13"-14" */
+  }
+}
+
+@media (min-width: 1280px) {
+  html {
+    font-size: 18px;
+    /* ~112.5% - Tăng tối ưu trên Laptop 15"-16" & PC vừa */
+  }
+}
+
+@media (min-width: 1536px) {
+  html {
+    font-size: 18.4px;
+    /* +15% - Tăng chuẩn 15% trên PC & màn hình lớn Full HD / 2K */
+  }
+}
+
+/* Authentication UI uses the same readable scale as the admin workspace. */
+.auth-shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+}
+
+.auth-shell .font-serif {
+  font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.auth-shell h1 {
+  font-size: clamp(1.75rem, 1.45rem + 1vw, 2.5rem);
+  line-height: 1.2 !important;
+}
+
+.auth-shell h2 {
+  font-size: clamp(1.5rem, 1.3rem + 0.55vw, 1.75rem);
+  line-height: 1.25 !important;
+}
+
+.auth-shell input:not([type='checkbox']):not([type='radio']),
+.auth-shell select,
+.auth-shell textarea,
+.auth-shell button {
+  min-height: 44px;
+}
+
+.auth-shell :focus-visible {
+  outline: 3px solid rgba(212, 175, 55, 0.45);
+  outline-offset: 2px;
+}
+
+@media (max-width: 639px) {
+  .auth-shell {
+    font-size: 0.875rem;
+  }
+
+  .auth-shell>* {
+    padding-inline: 1rem;
+  }
+
+  .auth-shell input:not([type='checkbox']):not([type='radio']),
+  .auth-shell select,
+  .auth-shell textarea {
+    font-size: 1rem !important;
+  }
+
+  .auth-shell form {
+    padding: 1.25rem;
+  }
+}
+
+/* Custom styles cho website Maian Homes */
+
+/* Navbar height offset — used by project hero section */
+:root {
+  --navbar-h: 57px;
+  /* mobile default */
+}
+
+@media (min-width: 768px) {
+  :root {
+    --navbar-h: 61px;
+  }
+}
+
+/* Style cho BotChat */
+.chat-bubble {
+  max-width: 85%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.user-bubble {
+  background-color: #2563eb;
+  color: white;
+  border-bottom-right-radius: 4px;
+  align-self: flex-end;
+}
+
+.assistant-bubble {
+  background-color: #f8fafc;
+  color: #0f172a;
+  border: 1px solid #e2e8f0;
+  border-bottom-left-radius: 4px;
+  align-self: flex-start;
+}
+
+/* Utility classes */
+.glass {
+  background: rgba(255, 255, 255, 0.97);
+}
+
+/* Tối ưu hóa hiệu năng cuộn trên iOS và ép GPU */
+html,
+body {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
+}
+
+.snap-section,
+.story-img-block,
+.video-bg-container {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+}
+
+/* Lenis smooth scrolling helper classes */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Sections liên tiếp không có khoảng hở */
+.snap-section+.snap-section {
+  margin-top: 0;
+}
+
+/* Smooth transition cho section background */
+.snap-section {
+  transition: background-color 0.3s ease;
+}
+
+.project-field-flash {
+  outline: 3px solid rgba(245, 158, 11, 0.75) !important;
+  outline-offset: 2px;
+  transition: outline-color 0.3s ease;
+}
+
+/* Project detail reading rhythm: body copy stays readable while headings keep a compact display rhythm. */
+.project-typography,
+.project-typography :where(*):not(svg):not(path):not(img):not(video) {
+  line-height: 1.5 !important;
+  letter-spacing: normal !important;
+  word-spacing: normal !important;
+}
+
+.project-typography :is(h1, h2) {
+  line-height: 1.1 !important;
+}
+
+.project-typography :is(h3, h4, h5, h6) {
+  line-height: 1.2 !important;
+}
+
+.project-typography :is(h1, h2, h3, h4, h5, h6) * {
+  font-size: inherit !important;
+  line-height: inherit !important;
+  letter-spacing: normal !important;
+  word-spacing: normal !important;
+}
+
+/* Responsive project type scale: semantic ranges keep text readable without oversized jumps. */
+.project-typography {
+  --project-body-size: clamp(0.9375rem, 0.35vw + 0.875rem, 1.125rem);
+  --project-body-sm-size: clamp(0.8125rem, 0.25vw + 0.75rem, 1rem);
+  --project-label-size: clamp(0.6875rem, 0.2vw + 0.65rem, 0.8125rem);
+  --project-button-size: clamp(0.8125rem, 0.2vw + 0.78rem, 1rem);
+  --project-display-xl: clamp(1.75rem, 4.8vw, 4.5rem);
+  --project-display-lg: clamp(1.5rem, 3.1vw, 3rem);
+  --project-display-md: clamp(1.25rem, 2.1vw, 2.25rem);
+  --project-stat-size: clamp(1.5rem, 3.8vw, 2.8rem);
+}
+
+/* Baseline for every textual control/content element across all project sections. */
+.project-typography :where(p,
+  li,
+  label,
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  small,
+  span,
+  dt,
+  dd,
+  figcaption) {
+  font-size: var(--project-body-sm-size) !important;
+}
+
+/* Hero */
+.project-typography #gioi-thieu h1 {
+  font-size: var(--project-display-xl) !important;
+}
+
+.project-typography #gioi-thieu p.hero-stagger:first-of-type {
+  font-size: var(--project-label-size) !important;
+}
+
+.project-typography #gioi-thieu p.hero-stagger.italic {
+  font-size: clamp(1rem, 1vw + 0.75rem, 1.5rem) !important;
+}
+
+.project-typography #gioi-thieu p.hero-stagger:not(.italic):not(:first-of-type) {
+  font-size: var(--project-body-sm-size) !important;
+}
+
+.project-typography #gioi-thieu button.hero-stagger {
+  font-size: var(--project-button-size) !important;
+}
+
+/* Story, overview and statistics */
+.project-typography .story-text-block h4,
+.project-typography #tong-quan h2 {
+  font-size: var(--project-display-lg) !important;
+}
+
+.project-typography .story-content-desc,
+.project-typography #tong-quan .stats-container>div:first-child>p {
+  font-size: var(--project-body-size) !important;
+}
+
+.project-typography #tong-quan .stat-item>p:first-child {
+  font-size: var(--project-label-size) !important;
+}
+
+.project-typography #tong-quan .stat-item>p:last-child {
+  font-size: var(--project-stat-size) !important;
+}
+
+/* Location and map */
+.project-typography #vi-tri .section-title>p:first-child {
+  font-size: var(--project-label-size) !important;
+}
+
+.project-typography #vi-tri .section-title>h2 {
+  font-size: var(--project-display-lg) !important;
+}
+
+.project-typography #vi-tri .section-title>h2+p,
+.project-typography #vi-tri .section-title>div p,
+.project-typography #vi-tri .section-title>div span {
+  font-size: var(--project-body-size) !important;
+}
+
+/* Master plan controls, apartment details and map hotspots */
+.project-typography #mat-bang button,
+.project-typography .floorplan-container button {
+  font-size: var(--project-button-size) !important;
+}
+
+.project-typography .floorplan-container .map-hotspot {
+  font-size: clamp(0.6875rem, 0.7vw, 0.8125rem) !important;
+}
+
+.project-typography .floorplan-container [class~="text-[8px]"],
+.project-typography .floorplan-container [class~="text-[9px]"],
+.project-typography .floorplan-container [class~="text-[10px]"] {
+  font-size: var(--project-label-size) !important;
+}
+
+.project-typography .floorplan-container .text-sm,
+.project-typography .floorplan-container .text-xs {
+  font-size: var(--project-body-sm-size) !important;
+}
+
+.project-typography #tien-ich h2,
+.project-typography #tien-ich h3 {
+  font-size: var(--project-display-md) !important;
+}
+
+/* Amenity galleries and library captions */
+.project-typography #tien-ich-ngoai-troi h3,
+.project-typography #tien-ich-trong-nha h3,
+.project-typography #thiet-ke-noi-that h3 {
+  font-size: var(--project-display-md) !important;
+}
+
+.project-typography #tien-ich-ngoai-troi h4,
+.project-typography #tien-ich-trong-nha h4,
+.project-typography #thiet-ke-noi-that h4 {
+  font-size: clamp(1.125rem, 1.3vw + 0.75rem, 2.25rem) !important;
+}
+
+.project-typography #tien-ich-ngoai-troi p,
+.project-typography #tien-ich-trong-nha p,
+.project-typography #thiet-ke-noi-that p,
+.project-typography .amenity-sidebar button span:first-child {
+  font-size: var(--project-body-sm-size) !important;
+}
+
+.project-typography #tien-ich-ngoai-troi span[class~="text-4xl"],
+.project-typography #tien-ich-trong-nha span[class~="text-4xl"],
+.project-typography #thiet-ke-noi-that span[class~="text-4xl"] {
+  font-size: clamp(2.25rem, 5vw, 4.5rem) !important;
+}
+
+/* Contact */
+.project-typography #lien-he h2 {
+  font-size: var(--project-display-md) !important;
+}
+
+.project-typography #lien-he p {
+  font-size: var(--project-body-sm-size) !important;
+}
+
+.project-typography #lien-he form input,
+.project-typography #lien-he form select,
+.project-typography #lien-he form textarea {
+  font-size: 1rem !important;
+}
+
+/* Explicit section coverage for component-rendered location and amenity content. */
+.project-typography :is(#vi-tri,
+  #tien-ich,
+  #tien-ich-ngoai-troi,
+  #tien-ich-trong-nha,
+  #thiet-ke-noi-that,
+  #thu-vien-tien-ich) :is(p,
+  li,
+  label,
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  small,
+  span,
+  dt,
+  dd,
+  figcaption) {
+  font-size: var(--project-body-size) !important;
+}
+
+.project-typography :is(#tien-ich,
+  #tien-ich-ngoai-troi,
+  #tien-ich-trong-nha,
+  #thiet-ke-noi-that,
+  #thu-vien-tien-ich) .amenity-sidebar [style*="font-size"] {
+  font-size: var(--project-body-size) !important;
+}
+
+.project-typography :is(#vi-tri,
+  #tien-ich,
+  #tien-ich-ngoai-troi,
+  #tien-ich-trong-nha,
+  #thiet-ke-noi-that,
+  #thu-vien-tien-ich) :is(button, input, select, textarea) {
+  font-size: var(--project-button-size) !important;
+}
+
+.project-typography :is(#vi-tri,
+  #tien-ich,
+  #tien-ich-ngoai-troi,
+  #tien-ich-trong-nha,
+  #thiet-ke-noi-that,
+  #thu-vien-tien-ich) :is(h1, h2, h3, h4, h5, h6) * {
+  font-size: inherit !important;
+}
+
+.project-typography #vi-tri .section-title>p:first-child,
+.project-typography #vi-tri .section-title>div>p:first-child,
+.project-typography #tien-ich .global-amenity-container h3,
+.project-typography #tien-ich .amenity-sidebar h3 {
+  font-size: var(--project-label-size) !important;
+}
+
+.project-typography #tien-ich .global-amenity-container h2,
+.project-typography #tien-ich-ngoai-troi h3,
+.project-typography #tien-ich-trong-nha h3,
+.project-typography #thiet-ke-noi-that h3,
+.project-typography #thu-vien-tien-ich h3 {
+  font-size: var(--project-display-md) !important;
+}
+
+.project-typography #tien-ich-ngoai-troi span[class~="text-4xl"],
+.project-typography #tien-ich-trong-nha span[class~="text-4xl"],
+.project-typography #thiet-ke-noi-that span[class~="text-4xl"] {
+  font-size: clamp(2.25rem, 5vw, 4.5rem) !important;
+}
+
+/* Project detail typography and motion are scoped to avoid changing global pages. */
+.project-public {
+  --project-body-size: clamp(0.9375rem, 0.35vw + 0.875rem, 1.125rem);
+  overflow-wrap: anywhere;
+}
+
+/* Chuẩn hóa Typography trang chi tiết dự án: line-height: 1.5, letter-spacing: 0.1em, word-spacing: 0.05em */
+.project-public,
+.project-public *:not(svg):not(path):not(img):not(video):not(.text-preserve):not(.text-preserve *) {
+  line-height: 1.5 !important;
+  letter-spacing: 0.1em !important;
+  word-spacing: 0.05em !important;
+}
+
+/* Heading trong trang dự án: giữ spacing bình thường */
+.project-public :is(h1, h2, h3, h4, h5, h6) {
+  letter-spacing: normal !important;
+  word-spacing: normal !important;
+}
+
+/* Cỡ chữ nội dung trang dự án: 17px cho tất cả trừ tiêu đề và .text-preserve */
+.project-public *:not(svg):not(path):not(img):not(video):not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(.step-number):not(.text-preserve):not(.text-preserve *) {
+  font-size: 17px;
+}
+
+/* Con bên trong heading dự án: inherit kích thước từ heading cha */
+.project-public :is(h1, h2, h3, h4, h5, h6) *:not(.text-preserve):not(.text-preserve *) {
+  font-size: inherit !important;
+}
+
+.project-public h1 {
+  font-size: clamp(1.75rem, 5vw, 4.5rem);
+  overflow-wrap: anywhere;
+}
+
+.project-public h2 {
+  font-size: clamp(1.5rem, 3.2vw, 3rem);
+  overflow-wrap: anywhere;
+}
+
+.project-public h3,
+.project-public h4 {
+  font-size: clamp(1.25rem, 2.2vw, 2.25rem);
+  overflow-wrap: anywhere;
+}
+
+.project-public section p,
+.project-public .story-content-desc {
+  font-size: var(--project-body-size);
+}
+
+.project-public p,
+.project-public li,
+.project-public address {
+  overflow-wrap: anywhere;
+}
+
+.project-public input,
+.project-public select,
+.project-public textarea {
+  min-height: 44px;
+  font-size: 1rem;
+}
+
+.project-public button:not(.project-section-dot),
+.project-public a {
+  min-height: 44px;
+}
+
+.project-public .project-section-dot {
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+  aspect-ratio: 1;
+  flex: none;
+}
+
+.project-public .project-section-dot::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 9999px;
+}
+
+.project-public .snap-section,
+.project-public .story-img-block,
+.project-public .video-bg-container {
+  will-change: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .project-public *,
+  .project-public *::before,
+  .project-public *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Shared editorial typography for Marketing editor, preview and public articles. */
+.article-rich-text {
+  overflow-wrap: anywhere;
+}
+
+.article-rich-text>*+* {
+  margin-top: 1rem;
+}
+
+.article-rich-text h2,
+.article-rich-text h3,
+.article-rich-text h4 {
+  color: #2d1b14;
+  font-family: inherit;
+  font-weight: 750;
+  line-height: 1.25;
+  scroll-margin-top: 7rem;
+}
+
+.article-rich-text h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin-top: 2rem;
+}
+
+.article-rich-text h3 {
+  font-size: clamp(1.25rem, 2.4vw, 1.55rem);
+  margin-top: 1.6rem;
+}
+
+.article-rich-text h4 {
+  font-size: clamp(1.08rem, 2vw, 1.25rem);
+  margin-top: 1.3rem;
+}
+
+.article-rich-text p {
+  min-height: 1.5em;
+}
+
+.article-rich-text ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+}
+
+.article-rich-text ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+}
+
+.article-rich-text li+li {
+  margin-top: 0.35rem;
+}
+
+.article-rich-text a {
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s;
+}
+
+.article-rich-text a:hover {
+  color: #1e40af;
+}
+
+.article-rich-text blockquote {
+  border-left: 3px solid #c5a059;
+  background: #fbf9f5;
+  padding: 0.8rem 1.25rem;
+  color: #5a4d44;
+  font-style: italic;
+}
+
+.article-rich-text hr {
+  border: 0;
+  border-top: 1px solid #e8e0d8;
+  margin: 2rem 0;
+}
+
+.article-rich-text [data-align="center"] {
+  text-align: center;
+}
+
+.article-rich-text [data-align="right"] {
+  text-align: right;
+}
+
+.article-rich-text figure {
+  margin: 1.75rem auto;
+  max-width: 100%;
+}
+
+.article-rich-text figure[data-size="small"] {
+  width: min(100%, 28rem);
+}
+
+.article-rich-text figure[data-size="medium"] {
+  width: min(100%, 44rem);
+}
+
+.article-rich-text figure[data-size="full"] {
+  width: 100%;
+}
+
+.article-rich-text figure[data-align="left"] {
+  margin-left: 0;
+}
+
+.article-rich-text figure[data-align="right"] {
+  margin-right: 0;
+}
+
+.article-rich-text figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  border: 1px solid #e8e0d8;
+}
+
+.article-rich-text figcaption {
+  margin-top: 0.5rem;
+  color: #6b5e53;
+  font-size: 0.78rem;
+  font-style: italic;
+  text-align: center;
+}
+
+.article-rich-text .ProseMirror-selectednode {
+  outline: 3px solid rgba(212, 175, 55, 0.6);
+  outline-offset: 3px;
+}
+
+/* Ẩn scrollbar nhưng vẫn cho phép cuộn tự nhiên */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

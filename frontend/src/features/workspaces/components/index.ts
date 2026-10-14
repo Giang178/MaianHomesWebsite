@@ -1,0 +1,9 @@
+export { default as WorkspaceFAQ } from './WorkspaceFAQ';
+export { default as WorkspaceConsultationForm } from './WorkspaceConsultationForm';
+export { default as OfficeHero } from './OfficeHero';
+export { default as OfficeBuildingsSection } from './OfficeBuildingsSection';
+export { default as OfficeGradeSpotlight } from './OfficeGradeSpotlight';
+export { default as OfficeLeasingProcess } from './OfficeLeasingProcess';
+export { default as OfficeGradeView } from './OfficeGradeView';
+export { default as CoworkingView } from './CoworkingView';
+export { default as OfficeDetailView } from './OfficeDetailView';

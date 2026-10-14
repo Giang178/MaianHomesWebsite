@@ -1,0 +1,86 @@
+services:
+  storage-init:
+    build: null
+    image: ${BACKEND_RELEASE_IMAGE:?BACKEND_RELEASE_IMAGE must be immutable}
+    environment:
+      ENVIRONMENT: production
+      APP_RELEASE: ${BACKEND_RELEASE_ID:?BACKEND_RELEASE_ID must match the image revision}
+  database-bootstrap:
+    build: null
+    image: ${BACKEND_RELEASE_IMAGE:?BACKEND_RELEASE_IMAGE must be immutable}
+    environment:
+      ENVIRONMENT: production
+      APP_RELEASE: ${BACKEND_RELEASE_ID:?BACKEND_RELEASE_ID must match the image revision}
+  database-verify:
+    build: null
+    image: ${BACKEND_RELEASE_IMAGE:?BACKEND_RELEASE_IMAGE must be immutable}
+    environment:
+      ENVIRONMENT: production
+      APP_RELEASE: ${BACKEND_RELEASE_ID:?BACKEND_RELEASE_ID must match the image revision}
+  api1:
+    build: null
+    image: ${BACKEND_BLUE_IMAGE:?BACKEND_BLUE_IMAGE must be immutable}
+    environment:
+      ENVIRONMENT: production
+      APP_RELEASE: ${BACKEND_BLUE_RELEASE:?BACKEND_BLUE_RELEASE must match the blue image revision}
+  api2:
+    build: null
+    image: ${BACKEND_GREEN_IMAGE:?BACKEND_GREEN_IMAGE must be immutable}
+    environment:
+      ENVIRONMENT: production
+      APP_RELEASE: ${BACKEND_GREEN_RELEASE:?BACKEND_GREEN_RELEASE must match the green image revision}
+  activity-worker:
+    build: null
+    image: ${BACKEND_WORKER_IMAGE:?BACKEND_WORKER_IMAGE must be selected by deploy-workers.ps1}
+    environment:
+      ENVIRONMENT: production
+      APP_RELEASE: ${BACKEND_WORKER_RELEASE:?BACKEND_WORKER_RELEASE must match the selected worker image revision}
+  content-worker:
+    build: null
+    image: ${BACKEND_WORKER_IMAGE:?BACKEND_WORKER_IMAGE must be selected by deploy-workers.ps1}
+    environment:
+      ENVIRONMENT: production
+      APP_RELEASE: ${BACKEND_WORKER_RELEASE:?BACKEND_WORKER_RELEASE must match the selected worker image revision}
+  system-monitor-worker:
+    build: null
+    image: ${BACKEND_WORKER_IMAGE:?BACKEND_WORKER_IMAGE must be selected by deploy-workers.ps1}
+    environment:
+      ENVIRONMENT: production
+      APP_RELEASE: ${BACKEND_WORKER_RELEASE:?BACKEND_WORKER_RELEASE must match the selected worker image revision}
+  frontend1:
+    build: null
+    image: ${FRONTEND_BLUE_IMAGE:?FRONTEND_BLUE_IMAGE must be immutable}
+  frontend2:
+    build: null
+    image: ${FRONTEND_GREEN_IMAGE:?FRONTEND_GREEN_IMAGE must be immutable}
+  nginx:
+    environment:
+      ACTIVE_COLOR: ${ACTIVE_COLOR:-blue}
+      DEPLOYMENT_INSTANCE_ID: ${DEPLOYMENT_INSTANCE_ID:?DEPLOYMENT_INSTANCE_ID must identify the exact Compose project}
+    command: ["/bin/sh", "/etc/nginx/scripts/watch-nginx-certificates.sh"]
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infrastructure/nginx.production.conf:/etc/nginx/nginx.conf:ro
+      - ./infrastructure/upstreams:/etc/nginx/upstreams:ro
+      - ./infrastructure/watch-nginx-certificates.sh:/etc/nginx/scripts/watch-nginx-certificates.sh:ro
+      - ./infrastructure/switch-nginx-upstream.sh:/etc/nginx/scripts/switch-nginx-upstream.sh:ro
+      - nginx_active_state:/etc/nginx/runtime
+      - letsencrypt:/etc/letsencrypt:ro
+      - certbot_webroot:/var/www/certbot:ro
+  certbot:
+    image: certbot/certbot:v3.1.0
+    restart: unless-stopped
+    entrypoint: /bin/sh
+    command: -c "trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h & wait $$!; done"
+    volumes:
+      - letsencrypt:/etc/letsencrypt
+      - certbot_webroot:/var/www/certbot
+    networks: [egress]
+
+volumes:
+  letsencrypt:
+  certbot_webroot:
+  nginx_active_state:
+    name: maian_production_nginx_active_state

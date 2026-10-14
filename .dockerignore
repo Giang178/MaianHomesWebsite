@@ -1,0 +1,12 @@
+.git
+.agents
+.vscode
+**/node_modules
+**/.next
+**/__pycache__
+**/.venv
+venv
+*.env
+!*.env.example
+backend/uploads
+project-audit

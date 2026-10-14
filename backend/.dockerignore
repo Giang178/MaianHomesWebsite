@@ -1,0 +1,17 @@
+.env
+.env.*
+venv/
+.venv/
+uploads/
+app/uploads/
+tests/
+integration_tests/
+load_tests/
+docs/
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+*.log

@@ -1,0 +1,38 @@
+User-agent: *
+Allow: /
+
+# AI Search Engine Crawlers – Allow all for GEO / AI Citation Readiness
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Block admin & API from crawlers
+User-agent: *
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+Disallow: /login
+Disallow: /_next/
+
+# Sitemap
+Sitemap: https://maianhomes.vn/sitemap.xml

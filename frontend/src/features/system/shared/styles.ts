@@ -1,0 +1,3 @@
+export const fieldClass = 'w-full rounded-xl border border-[#E5E2D9] bg-white px-3.5 py-2.5 text-xs text-[#2D1B14] placeholder-gray-400 outline-none transition-all focus:border-[#C5A059] focus:ring-1 focus:ring-[#C5A059]';
+export const primaryButtonClass = 'inline-flex whitespace-nowrap items-center justify-center gap-2 rounded-xl bg-[#2D1B14] hover:bg-[#3D2820] px-4 py-2.5 text-xs font-bold text-[#D4AF37] border border-[#C5A059] shadow-xs transition-all disabled:opacity-40';
+export const secondaryButtonClass = 'inline-flex whitespace-nowrap items-center justify-center gap-2 rounded-xl border border-[#E5E2D9] bg-[#FAF9F6] hover:bg-white hover:border-[#C5A059]/60 px-3.5 py-2 text-xs font-bold text-[#4A3B32] shadow-2xs transition-all disabled:opacity-40';
